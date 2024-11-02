@@ -71,6 +71,12 @@ public class SceneContext : MonoBehaviour
 DIContainer.Instance.InstantiateAndInject(_cube2);
 ```
 
+- Also you can manually resolve
+
+```C#
+Cube3 cube3 = new Cube3(DIContainer.Instance.Resolve<AdsService>());
+```
+
 ```C#
 public class AudioPlayer : MonoBehaviour, IInitializable
 {
@@ -105,7 +111,7 @@ public class AudioPlayer : MonoBehaviour, IInitializable
 
 - To resolve dependencies in this way use ProjectContext.Resolve<IAds>();
   
-  ```C#
+```C#
   public class Player : MonoBehaviour
     {
         IAds _ads;
@@ -116,7 +122,7 @@ public class AudioPlayer : MonoBehaviour, IInitializable
             _ads.Show();
         }
     }
-  ```
+```
 
 ```C#
 using DI;
