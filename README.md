@@ -18,7 +18,7 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] Box _box;
     [SerializeField] Cube _cube;
 
-    private void Awake()
+    void Awake()
     {
         init();
         injectDependencies();
@@ -41,7 +41,7 @@ public class Bootstrap : MonoBehaviour
        //DIContainer.Instance.Bind<ICube>(_cube, Lifetime.Singleton); //bind mono
     }
     
-    private void injectDependencies()
+    void injectDependencies()
     {
         foreach (MonoBehaviour monoBehaviour in FindObjectsOfType<MonoBehaviour>(true))
         {
