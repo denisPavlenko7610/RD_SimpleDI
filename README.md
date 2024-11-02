@@ -70,11 +70,11 @@ public class AudioPlayer : MonoBehaviour, IInitializable
 {
     [SerializeField] Cube2 _cube2;
     
-    private IAudioService _audioService;
-    private ICube _cube;
+    IAudioService _audioService;
+    ICube _cube;
 
     [Inject]
-    private void initialize(IAudioService audioService, ICube cube)
+    void initialize(IAudioService audioService, ICube cube)
     {
         _audioService = audioService;
         _cube = cube;
@@ -87,7 +87,7 @@ public class AudioPlayer : MonoBehaviour, IInitializable
         StartCoroutine(nameof(Spawn));
     }
 
-    private IEnumerator Spawn()
+    IEnumerator Spawn()
     {
         yield return new WaitForSeconds(1);
         Cube2 obj = DIContainer.Instance.InstantiateAndInject(_cube2);
