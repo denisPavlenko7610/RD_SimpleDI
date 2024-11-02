@@ -15,7 +15,7 @@ namespace DI
 
         private readonly Dictionary<Type, Registration> _registrations = new Dictionary<Type, Registration>();
 
-        private class Registration
+        class Registration
         {
             public Func<object> Factory;
             public Lifetime Lifetime;
@@ -57,14 +57,14 @@ namespace DI
         {
             return (T)Resolve(typeof(T));
         }
-
+        
         public object Resolve(Type serviceType)
         {
             if (!_registrations.TryGetValue(serviceType, out var registration))
             {
                 throw new InvalidOperationException($"Service of type {serviceType} is not registered.");
             }
-
+        
             return registration.Lifetime switch
             {
                 Lifetime.Singleton => registration.ObjectInstance ??= registration.Factory(),
@@ -111,7 +111,7 @@ namespace DI
         }
 
         // Inject dependencies into any object
-        public void InjectDependencies(object instance)
+        void InjectDependencies(object instance)
         {
             var type = instance.GetType();
 
@@ -137,25 +137,6 @@ namespace DI
                     method.Invoke(instance, parameters);
                 }
             }
-        }
-
-        // Create and inject instance by constructor
-        object CreateInstance(Type type)
-        {
-            var constructor = type.GetConstructors()
-                .OrderByDescending(c => c.GetParameters().Length)
-                .FirstOrDefault();
-
-            if (constructor == null)
-            {
-                throw new InvalidOperationException($"No public constructors found for type {type}.");
-            }
-
-            var parameters = constructor.GetParameters()
-                .Select(p => Resolve(p.ParameterType))
-                .ToArray();
-
-            return constructor.Invoke(parameters);
         }
     }
 }
