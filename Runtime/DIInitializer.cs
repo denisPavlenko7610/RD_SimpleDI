@@ -3,13 +3,15 @@ using System;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+
+// DIInitializer.cs
 namespace DI
 {
     public class DIInitializer
     {
         static DIInitializer _instance;
         public static DIInitializer Instance => _instance ??= new DIInitializer();
-        // Inject dependencies into fields marked with [Inject] and methods marked with [Inject] for MonoBehaviours
+
         public void InjectDependencies(MonoBehaviour monoBehaviour)
         {
             Type type = monoBehaviour.GetType();
@@ -19,7 +21,7 @@ namespace DI
             {
                 if (!Attribute.IsDefined(field, typeof(InjectAttribute)))
                     continue;
-            
+
                 object dependency = DIContainer.Instance.Resolve(field.FieldType);
                 field.SetValue(monoBehaviour, dependency);
             }
@@ -29,7 +31,7 @@ namespace DI
             {
                 if (!Attribute.IsDefined(method, typeof(InjectAttribute)))
                     continue;
-            
+
                 object[] parameters = method.GetParameters()
                     .Select(p => DIContainer.Instance.Resolve(p.ParameterType))
                     .ToArray();
