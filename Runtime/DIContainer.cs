@@ -79,28 +79,28 @@ namespace DI
         public T InstantiateAndInject<T>(T prefab, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab);
-            setupAfterSpawn(instance);
+            setupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
         public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation);
-            setupAfterSpawn(instance);
+            setupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
         public T InstantiateAndInject<T>(T prefab, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, parent);
-            setupAfterSpawn(instance);
+            setupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
         public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation, parent);
-            setupAfterSpawn(instance);
+            setupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
