@@ -76,36 +76,41 @@ namespace DI
         }
 
         // Instantiate and inject dependencies
-        public T InstantiateAndInject<T>(T prefab) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndInject<T>(T prefab, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab);
-            DIInitializer.Instance.InjectDependencies(instance);
-            instance.Initialize();
+            setupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation);
-            DIInitializer.Instance.InjectDependencies(instance);
-            instance.Initialize();
+            setupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndInject<T>(T prefab, Transform parent) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndInject<T>(T prefab, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, parent);
-            DIInitializer.Instance.InjectDependencies(instance);
-            instance.Initialize();
+            setupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation, parent);
-            DIInitializer.Instance.InjectDependencies(instance);
-            instance.Initialize();
+            setupAfterSpawn(instance);
             return instance;
+        }
+
+        void setupAfterSpawn<T>(T instance, bool needInitialize) where T : MonoBehaviour, IInitializable
+        {
+            DIInitializer.Instance.InjectDependencies(instance);
+            if (needInitialize)
+            {
+                instance.Initialize();
+            }
         }
     }
 }

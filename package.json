@@ -1,6 +1,6 @@
 {
   "name": "com.rd.simpledi",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "displayName": "SimpleDI",
   "description": "simple di for Unity",
   "unity": "2022.1",
