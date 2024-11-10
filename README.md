@@ -78,7 +78,7 @@ Cube3 cube3 = new Cube3(DIContainer.Instance.Resolve<AdsService>());
 ```
 
 ```C#
-public class AudioPlayer : MonoBehaviour, IInitializable  //IInitializable is required!
+public class AudioPlayer : MonoBehaviour, IInitializable
 {
     [SerializeField] Cube2 _cube2;
     
