@@ -1,12 +1,8 @@
-﻿using DI.Attributes;
-using DI.Interfaces;
+﻿using DI.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
-// DIContainer.cs
 namespace DI
 {
     public class DIContainer
@@ -14,7 +10,7 @@ namespace DI
         static DIContainer _instance;
         public static DIContainer Instance => _instance ??= new DIContainer();
 
-        private readonly Dictionary<Type, Registration> _registrations = new Dictionary<Type, Registration>();
+        private readonly Dictionary<Type, Registration> _registrations = new();
 
         class Registration
         {
@@ -76,37 +72,39 @@ namespace DI
         }
 
         // Instantiate and inject dependencies
-        public T InstantiateAndInject<T>(T prefab, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab);
-            setupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
-        public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation);
-            setupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
-        public T InstantiateAndInject<T>(T prefab, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab, Transform parent, bool needBind, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, parent);
-            setupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
-        public T InstantiateAndInject<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation, parent);
-            setupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance, needInitialize);
             return instance;
         }
 
-        void setupAfterSpawn<T>(T instance, bool needInitialize) where T : MonoBehaviour, IInitializable
+        void SetupAfterSpawn<T>(T instance, bool needInitialize) where T : MonoBehaviour, IInitializable
         {
             DIInitializer.Instance.InjectDependencies(instance);
+            Instance.Bind(instance);
+            
             if (needInitialize)
             {
                 instance.Initialize();

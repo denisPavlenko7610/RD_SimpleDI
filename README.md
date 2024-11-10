@@ -69,6 +69,7 @@ public class SceneContext : MonoBehaviour
   
 ```C#
 DIContainer.Instance.InstantiateAndInject(_cube2);
+DIContainer.Instance.InstantiateAndInject(_cube2, needInitialize: true);
 ```
 
 - Also you can manually resolve
