@@ -158,3 +158,12 @@ public class ProjectContext : MonoBehaviour
 }
 ```
 
+# Add MonoRunner instead MonoBehaviour
+use instead Awake and Start - Initialize,
+instead Update, FixedUpdate, LateUpdate - Run, FixedRun, LateRun
+instead OnEnable - Appear
+instead OnDisable - Disappear
+instead OnDestroy - Delete
+
+Also use methods BeforeAwake, BeforeStart, BeforeUpdate and similar only once in your entry point to call some logic before these methods
+

@@ -1,16 +1,17 @@
 ﻿// using DI;
 // using DI.Interfaces;
-// using Example;
+// using RD_Tween.Runtime.LifeCycle;
 // using UnityEngine;
 //
 // //Exemple SceneContext class
-// public class SceneContext : MonoBehaviour
+// public class SceneContext : MonoRunner
 // {
 //     [SerializeField] Box _box;
 //     [SerializeField] Cube _cube;
 //
-//     private void Awake()
+//     protected override void BeforeAwake()
 //     {
+//         base.Initialize();
 //         InitializeBindings();
 //         injectDependencies();
 //     }

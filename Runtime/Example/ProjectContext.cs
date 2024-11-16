@@ -1,16 +1,17 @@
 ﻿// using DI;
 // using DI.Interfaces;
-// using Example;
+// using RD_Tween.Runtime.LifeCycle;
 // using UnityEngine;
 // using UnityEngine.SceneManagement;
 //
 // //Exemple ProjectContext class
-// public class ProjectContext : MonoBehaviour
+// public class ProjectContext : MonoRunner
 // {
-//     [SerializeField] AdsService _adsService; 
-//     
-//     void Awake()
+//     [SerializeField] AdsService _adsService;
+//
+//     protected override void BeforeAwake()
 //     {
+//         base.Initialize();
 //         InitializeBindings();
 //         DontDestroyOnLoad(gameObject);
 //
