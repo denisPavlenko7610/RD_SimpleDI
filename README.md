@@ -27,7 +27,6 @@ public class SceneContext : MonoRunner
     {
         base.BeforeAwake();
         InitializeBindings();
-        injectDependencies();
     }
     
     void InitializeBindings()
@@ -45,14 +44,6 @@ public class SceneContext : MonoRunner
         //DIContainer.Instance.Bind<ICube>(_box, Lifetime.Transient); //bind mono
         //DIContainer.Instance.Bind<ICube>(_cube, Lifetime.Cached); //bind mono
         //DIContainer.Instance.Bind<ICube>(_cube, Lifetime.Singleton); //bind mono
-    }
-    
-    void injectDependencies()
-    {
-        foreach (MonoRunner monoRunner in FindObjectsOfType<MonoRunner>(true))
-        {
-            DIInitializer.Instance.InjectDependencies(monoRunner);
-        }
     }
 }
 ```
