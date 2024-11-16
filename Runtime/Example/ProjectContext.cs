@@ -1,32 +1,50 @@
-﻿// using DI;
-// using DI.Interfaces;
+﻿// using System;
+// using System.Threading.Tasks;
+// using DI;
 // using RD_Tween.Runtime.LifeCycle;
 // using UnityEngine;
 // using UnityEngine.SceneManagement;
-//
-// //Exemple ProjectContext class
-// public class ProjectContext : MonoRunner
+// namespace LikeAGTA.Core
 // {
-//     [SerializeField] AdsService _adsService;
-//
-//     protected override void BeforeAwake()
+//     public class ProjectContext : MonoRunner
 //     {
-//         base.Initialize();
-//         InitializeBindings();
-//         DontDestroyOnLoad(gameObject);
+//         protected override async void BeforeAwake()
+//         {
+//             try
+//             {
+//                 base.BeforeAwake();
+//                 InitializeBindings();
+//                 DontDestroyOnLoad(gameObject);
 //
-//         SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(0).buildIndex + 1);
+//                 await LoadMainScene();
+//             }
+//             catch (Exception e)
+//             {
+//                 throw;
+//             }
+//         }
+//         
+//         private async Task LoadMainScene()
+//         {
+//             AsyncOperation loadEnvironmentTask = SceneManager.LoadSceneAsync("Environment", LoadSceneMode.Additive);
+//             AsyncOperation loadPlayerTask = SceneManager.LoadSceneAsync("Player", LoadSceneMode.Additive);
+//             
+//             while (!loadEnvironmentTask.isDone || !loadPlayerTask.isDone)
+//             {
+//                 await Task.Yield();
+//             }
+//
+//             await SceneManager.UnloadSceneAsync("Bootstrap");
+//         }
+//
+//         void InitializeBindings()
+//         {
+//             var container = DIContainer.Instance;
+//
+//             // Register global services and dependencies
+//             //container.Bind<IAds, AdsService>();
+//         }
+//
+//         public static T Resolve<T>() => DIContainer.Instance.Resolve<T>();
 //     }
-//
-//     void InitializeBindings()
-//     {
-//         var container = DIContainer.Instance;
-//
-//         // Register global services and dependencies
-//         //container.Bind<IAds, AdsService>();
-//         container.Bind<IAds>(_adsService);
-//         //container.Bind(_adsService);
-//     }
-//
-//     public static T Resolve<T>() => DIContainer.Instance.Resolve<T>();
 // }

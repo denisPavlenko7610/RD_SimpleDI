@@ -1,5 +1,4 @@
 ﻿// using DI;
-// using DI.Interfaces;
 // using RD_Tween.Runtime.LifeCycle;
 // using UnityEngine;
 //
@@ -35,13 +34,9 @@
 //     
 //     void injectDependencies()
 //     {
-//         foreach (MonoBehaviour monoBehaviour in FindObjectsOfType<MonoBehaviour>(true))
+//         foreach (MonoRunner monoRunner in FindObjectsOfType<MonoRunner>(true))
 //         {
-//             DIInitializer.Instance.InjectDependencies(monoBehaviour);
-//             if (monoBehaviour is IInitializable initializable)
-//             {
-//                 initializable.Initialize();
-//             }
+//             DIInitializer.Instance.InjectDependencies(monoRunner);
 //         }
 //     }
 // }

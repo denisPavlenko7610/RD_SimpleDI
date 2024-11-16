@@ -1,6 +1,6 @@
-﻿using DI.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using RD_Tween.Runtime.LifeCycle;
 using UnityEngine;
 
 namespace DI
@@ -72,43 +72,38 @@ namespace DI
         }
 
         // Instantiate and inject dependencies
-        public T InstantiateAndBind<T>(T prefab, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab) where T : MonoRunner
         {
             T instance = UnityEngine.Object.Instantiate(prefab);
-            SetupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation) where T : MonoRunner
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation);
-            SetupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndBind<T>(T prefab, Transform parent, bool needBind, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab, Transform parent, bool needBind) where T : MonoRunner
         {
             T instance = UnityEngine.Object.Instantiate(prefab, parent);
-            SetupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent, bool needInitialize = false) where T : MonoBehaviour, IInitializable
+        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent) where T : MonoRunner
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation, parent);
-            SetupAfterSpawn(instance, needInitialize);
+            SetupAfterSpawn(instance);
             return instance;
         }
 
-        void SetupAfterSpawn<T>(T instance, bool needInitialize) where T : MonoBehaviour, IInitializable
+        void SetupAfterSpawn<T>(T instance) where T : MonoRunner
         {
             DIInitializer.Instance.InjectDependencies(instance);
             Instance.Bind(instance);
-            
-            if (needInitialize)
-            {
-                instance.Initialize();
-            }
         }
     }
 }

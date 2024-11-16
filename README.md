@@ -1,4 +1,4 @@
-# RD_SimpleDI
+_# RD_SimpleDI
 Smallest and simple di for unity
 
 Unity Dependency Injection (DI) Framework
@@ -14,18 +14,18 @@ Automatic Field and Method Injection via [Inject] attribute
 ```C#
 
 using DI;
-using DI.Interfaces;
 using Example;
 using UnityEngine;
 
 //Exemple SceneContext class
-public class SceneContext : MonoBehaviour
+public class SceneContext : MonoRunner
 {
     [SerializeField] Box _box;
     [SerializeField] Cube _cube;
 
-    private void Awake()
+    protected override void BeforeAwake()
     {
+        base.BeforeAwake();
         InitializeBindings();
         injectDependencies();
     }
@@ -49,13 +49,9 @@ public class SceneContext : MonoBehaviour
     
     void injectDependencies()
     {
-        foreach (MonoBehaviour monoBehaviour in FindObjectsOfType<MonoBehaviour>(true))
+        foreach (MonoRunner monoRunner in FindObjectsOfType<MonoRunner>(true))
         {
-            DIInitializer.Instance.InjectDependencies(monoBehaviour);
-            if (monoBehaviour is IInitializable initializable)
-            {
-                initializable.Initialize();
-            }
+            DIInitializer.Instance.InjectDependencies(monoRunner);
         }
     }
 }
@@ -64,7 +60,7 @@ public class SceneContext : MonoBehaviour
 # Create SceneContext class on level scene
 - Use DIContainer.Instance.Bind to bins non monobehaviour or monobehaviour classes with or without interfaces
 - Use [Inject] attribute to resolve dependency
-- You can use IInitializable interface instead Awake or Start monobehaviour methods
+- You can use MonoRunner instead of standard monobehaviour methods. See below
 - If you want to resolve dependencies in runtime use this approach
   
 ```C#
@@ -79,7 +75,7 @@ Cube3 cube3 = new Cube3(DIContainer.Instance.Resolve<AdsService>());
 ```
 
 ```C#
-public class AudioPlayer : MonoBehaviour, IInitializable
+public class AudioPlayer : MonoRunner
 {
     [SerializeField] Cube2 _cube2;
     
@@ -87,14 +83,15 @@ public class AudioPlayer : MonoBehaviour, IInitializable
     ICube _cube;
 
     [Inject]
-    void initialize(IAudioService audioService, ICube cube)
+    void Construct(IAudioService audioService, ICube cube)
     {
         _audioService = audioService;
         _cube = cube;
     }
     
-    public void Initialize()
+    protected override void Initialize()
     {
+        base.Initialize();
         _audioService.PlaySound();
         _cube.Move();
         StartCoroutine(nameof(Spawn));
@@ -113,12 +110,13 @@ public class AudioPlayer : MonoBehaviour, IInitializable
 - To resolve dependencies in this way use ProjectContext.Resolve<IAds>();
   
 ```C#
-  public class Player : MonoBehaviour
+  public class Player : MonoRunner
     {
         IAds _ads;
 
-        public void Awake()
+        protected override void Initialize()
         {
+            base.Initialize();
             _ads = ProjectContext.Resolve<IAds>();
             _ads.Show();
         }
@@ -132,12 +130,13 @@ using Example;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ProjectContext : MonoBehaviour
+public class ProjectContext : MonoRunner
 {
     [SerializeField] AdsService _adsService; 
     
-    void Awake()
+    protected override void BeforeAwake()
     {
+        base.BeforeAwake();
         InitializeBindings();
         DontDestroyOnLoad(gameObject);
 
@@ -165,5 +164,5 @@ instead OnEnable - Appear
 instead OnDisable - Disappear
 instead OnDestroy - Delete
 
-Also use methods BeforeAwake, BeforeStart, BeforeUpdate and similar only once in your entry point to call some logic before these methods
+Also use methods BeforeAwake, BeforeStart, BeforeUpdate and similar only once in your entry point to call some logic before these methods_
 
