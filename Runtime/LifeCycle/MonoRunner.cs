@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DI;
+using UnityEngine;
 
 namespace RD_Tween.Runtime.LifeCycle
 {
@@ -7,6 +8,7 @@ namespace RD_Tween.Runtime.LifeCycle
         private async void Awake()
         {
             BeforeAwake();
+            DIInitializer.Instance.InjectDependencies(this);
         }
         
         private async void Start()
