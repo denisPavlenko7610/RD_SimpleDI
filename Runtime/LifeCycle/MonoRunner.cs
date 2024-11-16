@@ -4,9 +4,13 @@ namespace RD_Tween.Runtime.LifeCycle
 {
     public abstract class MonoRunner : MonoBehaviour
     {
-        private async void Start()
+        private async void Awake()
         {
             BeforeAwake();
+        }
+        
+        private async void Start()
+        {
             BeforeStart();
             Initialize();
         }
