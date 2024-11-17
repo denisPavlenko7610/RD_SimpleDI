@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using RD_SimpleDI.Runtime.LifeCycle;
 using UnityEngine;
 
 namespace DI
@@ -81,21 +80,21 @@ namespace DI
             }
         }
 
-        public T InstantiateAndBind<T>(T prefab) where T : MonoRunner
+        public T InstantiateAndBind<T>(T prefab) where T : MonoBehaviour
         {
             T instance = UnityEngine.Object.Instantiate(prefab);
             SetupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation) where T : MonoRunner
+        public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation) where T : MonoBehaviour
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation);
             SetupAfterSpawn(instance);
             return instance;
         }
 
-        public T InstantiateAndBind<T>(T prefab, Transform parent, bool needBind) where T : MonoRunner
+        public T InstantiateAndBind<T>(T prefab, Transform parent, bool needBind) where T : MonoBehaviour
         {
             T instance = UnityEngine.Object.Instantiate(prefab, parent);
             SetupAfterSpawn(instance);
@@ -103,14 +102,14 @@ namespace DI
         }
 
         public T InstantiateAndBind<T>(T prefab, Vector3 position, Quaternion rotation, Transform parent)
-            where T : MonoRunner
+            where T : MonoBehaviour
         {
             T instance = UnityEngine.Object.Instantiate(prefab, position, rotation, parent);
             SetupAfterSpawn(instance);
             return instance;
         }
 
-        private void SetupAfterSpawn<T>(T instance) where T : MonoRunner
+        private void SetupAfterSpawn<T>(T instance) where T : MonoBehaviour
         {
             DIInitializer.Instance.InjectDependencies(instance);
             Instance.Bind(instance);
