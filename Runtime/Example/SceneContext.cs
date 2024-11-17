@@ -13,7 +13,9 @@
 //     {
 //         base.Initialize();
 //         InitializeBindings();
+// #if UNITY_EDITOR
 //         DIContainer.Instance.ValidateRegistrations();
+// #endif
 //     }
 //     
 //     void InitializeBindings()
