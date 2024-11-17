@@ -2,11 +2,11 @@ _# RD_SimpleDI
 Smallest and simple di for unity
 
 Unity Dependency Injection (DI) Framework
-A simple Dependency Injection framework for Unity, supporting various lifetimes (Singleton, Transient, Cached) and enabling clean and efficient dependency management for both MonoBehaviour and non-MonoBehaviour types.
+A simple Dependency Injection framework for Unity, supporting various lifetimes (Singleton) and enabling clean and efficient dependency management for both MonoBehaviour and non-MonoBehaviour types.
 
 ##Features
 Easy Dependency Registration and Resolution
-Multiple Lifetime Scopes: Singleton, Transient, Cached
+Multiple Lifetime Scopes: Singleton
 Automatic Field and Method Injection via [Inject] attribute
 
 # Setup
