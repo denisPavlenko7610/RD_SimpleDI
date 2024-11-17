@@ -54,6 +54,18 @@
 //         public static T Resolve<T>() => DIContainer.Instance.Resolve<T>();
 //         
 //          private void OnPausePerformed(InputAction.CallbackContext context) => TogglePause();
+//          
+//          protected void TogglePause()
+//          {
+//              if (!IsPaused)
+//              {
+//                  Pause();
+//              }
+//              else
+//              {
+//                  Resume();
+//              }
+//          }
 //
 //          protected override void Delete()
 //          {

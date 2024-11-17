@@ -5,7 +5,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
 {
     public abstract class MonoRunner : MonoBehaviour
     {
-        static bool IsPaused { get; set; }
+        public static bool IsPaused { get; private set; }
         
         private async void Awake()
         {
@@ -95,17 +95,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         /// Custom lifecycle methods. Use these methods for pause and resume in game
         /// </summary>
         
-       protected void TogglePause()
-       {
-           if (!IsPaused)
-           {
-               Pause();
-           }
-           else
-           {
-               Resume();
-           }
-       }
+       
         
         protected virtual void Pause()
         {
