@@ -5,7 +5,10 @@ namespace RD_SimpleDI.Runtime.LifeCycle
 {
     public abstract class MonoRunner : MonoBehaviour
     {
-        public static bool IsPaused { get; private set; }
+        private static bool _isPaused;
+        
+        public static event System.Action OnPause;
+        public static event System.Action OnResume;
         
         private async void Awake()
         {
@@ -27,7 +30,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
 
         private async void Update()
         {
-            if (IsPaused)
+            if (_isPaused)
                 return;
             
             BeforeUpdate();
@@ -36,7 +39,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         
         private async void FixedUpdate()
         {
-            if (IsPaused)
+            if (_isPaused)
                 return;
             
             BeforeFixedUpdate();
@@ -45,7 +48,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         
         private async void LateUpdate()
         {
-            if (IsPaused)
+            if (_isPaused)
                 return;
             
             BeforeLateUpdate();
@@ -95,16 +98,28 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         /// Custom lifecycle methods. Use these methods for pause and resume in game
         /// </summary>
         
-       
+       protected void TogglePause()
+       {
+           if (!_isPaused)
+           {
+               Pause();
+           }
+           else
+           {
+               Resume();
+           }
+       }
         
-        protected virtual void Pause()
+        private void Pause()
         {
-            IsPaused = true;
+            _isPaused = true;
+            OnPause?.Invoke();
         }
 
-        protected virtual void Resume()
+        private void Resume()
         {
-            IsPaused = false;
+            _isPaused = false;
+            OnResume?.Invoke();
         }
     }
 }

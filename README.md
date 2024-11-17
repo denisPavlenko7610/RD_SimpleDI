@@ -24,7 +24,7 @@ public class SceneContext : MonoRunner
 - Use [Inject] attribute to resolve dependency
 - You can use MonoRunner instead of standard monobehaviour methods. See below
 - If you want to resolve dependencies in runtime use this approach
-- Override Pause and Resume if you want to do some specific on it. Also choose the key and subscribe on it to
+- Subscribe OnPause and OnResume events if you want to do some specific on it. Also choose the key and subscribe on it to
 toggle pause.
   
 ```C#
