@@ -1,13 +1,15 @@
 ﻿// using System;
 // using System.Threading.Tasks;
 // using DI;
-// using RD_Tween.Runtime.LifeCycle;
+// using RD_SimpleDI.Runtime.LifeCycle;
 // using UnityEngine;
 // using UnityEngine.SceneManagement;
 // namespace LikeAGTA.Core
 // {
 //     public class ProjectContext : MonoRunner
 //     {
+//         [SerializeField] PlayerInput _playerInput;
+//         
 //         protected override async void BeforeAwake()
 //         {
 //             try
@@ -22,6 +24,11 @@
 //             {
 //                 throw;
 //             }
+//         }
+//         
+//         void InitVariables()
+//         {
+//             _playerInput.actions["Pause"].performed += OnPausePerformed;
 //         }
 //         
 //         private async Task LoadMainScene()
@@ -39,12 +46,31 @@
 //
 //         void InitializeBindings()
 //         {
-//             var container = DIContainer.Instance;
-//
+//             DIContainer.Instance.Bind(_playerInput);
 //             // Register global services and dependencies
 //             //container.Bind<IAds, AdsService>();
 //         }
 //
 //         public static T Resolve<T>() => DIContainer.Instance.Resolve<T>();
+//         
+//          private void OnPausePerformed(InputAction.CallbackContext context) => TogglePause();
+//
+//          void TogglePause()
+//          {
+//              if (IsPaused)
+//              {
+//                  Pause();
+//              }
+//              else
+//              {
+//                  Resume();
+//              }
+//          }
+//
+//          protected override void Delete()
+//          {
+//              base.Delete();
+//              _playerInput.actions["Pause"].performed -= OnPausePerformed;
+//          }
 //     }
 // }
