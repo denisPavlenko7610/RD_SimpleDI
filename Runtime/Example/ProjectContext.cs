@@ -55,18 +55,6 @@
 //         
 //          private void OnPausePerformed(InputAction.CallbackContext context) => TogglePause();
 //
-//          void TogglePause()
-//          {
-//              if (IsPaused)
-//              {
-//                  Pause();
-//              }
-//              else
-//              {
-//                  Resume();
-//              }
-//          }
-//
 //          protected override void Delete()
 //          {
 //              base.Delete();
