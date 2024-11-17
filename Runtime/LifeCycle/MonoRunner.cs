@@ -5,7 +5,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
 {
     public abstract class MonoRunner : MonoBehaviour
     {
-        private static bool _isPaused;
+        protected static bool IsPaused { get; private set; }
         
         public static event System.Action OnPause;
         public static event System.Action OnResume;
@@ -30,7 +30,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
 
         private async void Update()
         {
-            if (_isPaused)
+            if (IsPaused)
                 return;
             
             BeforeUpdate();
@@ -39,7 +39,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         
         private async void FixedUpdate()
         {
-            if (_isPaused)
+            if (IsPaused)
                 return;
             
             BeforeFixedUpdate();
@@ -48,7 +48,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         
         private async void LateUpdate()
         {
-            if (_isPaused)
+            if (IsPaused)
                 return;
             
             BeforeLateUpdate();
@@ -100,7 +100,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         
        protected void TogglePause()
        {
-           if (!_isPaused)
+           if (!IsPaused)
            {
                Pause();
            }
@@ -112,13 +112,13 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         
         private void Pause()
         {
-            _isPaused = true;
+            IsPaused = true;
             OnPause?.Invoke();
         }
 
         private void Resume()
         {
-            _isPaused = false;
+            IsPaused = false;
             OnResume?.Invoke();
         }
     }
