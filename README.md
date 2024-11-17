@@ -12,21 +12,30 @@ Automatic Field and Method Injection via [Inject] attribute
 # Setup
 
 ```C#
-
 using DI;
-using Example;
+using RD_SimpleDI.Runtime.LifeCycle;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 //Exemple SceneContext class
 public class SceneContext : MonoRunner
 {
     [SerializeField] Box _box;
     [SerializeField] Cube _cube;
+    
+    private PlayerInput _playerInput;
 
     protected override void BeforeAwake()
     {
-        base.BeforeAwake();
+        base.Initialize();
         InitializeBindings();
+        InitVariables();
+    }
+
+    void InitVariables()
+    {
+        _playerInput = GetComponent<PlayerInput>();
+        _playerInput.actions["Pause"].performed += OnPausePerformed;
     }
     
     void InitializeBindings()
@@ -37,13 +46,30 @@ public class SceneContext : MonoRunner
         // var audioService = new AudioService();
         // DIContainer.Instance.Bind(audioService); //bind non mono
         
-        //DIContainer.Instance.Bind(_cube); //bind mono //Lifetime.Singleton by default
+        //DIContainer.Instance.Bind(_cube); //bind mono
         
         DIContainer.Instance.Bind<ICube>(_box); //bind mono
        
         //DIContainer.Instance.Bind<ICube>(_box, Lifetime.Transient); //bind mono
         //DIContainer.Instance.Bind<ICube>(_cube, Lifetime.Cached); //bind mono
         //DIContainer.Instance.Bind<ICube>(_cube, Lifetime.Singleton); //bind mono
+    }
+    
+    private void OnPausePerformed(InputAction.CallbackContext context)
+    {
+        TogglePause();
+    }
+
+    void TogglePause()
+    {
+        if (IsPaused)
+        {
+            Pause();
+        }
+        else
+        {
+            Resume();
+        }
     }
 }
 ```
@@ -53,6 +79,8 @@ public class SceneContext : MonoRunner
 - Use [Inject] attribute to resolve dependency
 - You can use MonoRunner instead of standard monobehaviour methods. See below
 - If you want to resolve dependencies in runtime use this approach
+- Override Pause and Resume if you want to do some specific on it. Also choose the key and subscribe on it to
+toggle pause.
   
 ```C#
 DIContainer.Instance.InstantiateAndInject(_cube2);

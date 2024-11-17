@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using RD_Tween.Runtime.LifeCycle;
+using RD_SimpleDI.Runtime.LifeCycle;
 using UnityEngine;
 
 namespace DI
