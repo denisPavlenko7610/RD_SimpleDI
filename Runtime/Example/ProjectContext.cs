@@ -8,7 +8,7 @@
 // {
 //     public class ProjectContext : MonoRunner
 //     {
-//         [SerializeField] PlayerInput _playerInput;
+//         private InputAction _pauseAction;
 //         
 //         protected override async void BeforeAwake()
 //         {
@@ -28,7 +28,8 @@
 //         
 //         void InitVariables()
 //         {
-//             _playerInput.actions["Pause"].performed += OnPausePerformed;
+//             _pauseAction = InputSystem.actions.FindAction("Pause");
+//             _pauseAction.performed += OnPausePerformed;
 //         }
 //         
 //         private async Task LoadMainScene()
@@ -58,7 +59,7 @@
 //          protected override void Delete()
 //          {
 //              base.Delete();
-//              _playerInput.actions["Pause"].performed -= OnPausePerformed;
+//              _pauseAction.performed -= OnPausePerformed;
 //          }
 //     }
 // }

@@ -30,27 +30,18 @@ namespace RD_SimpleDI.Runtime.LifeCycle
 
         private async void Update()
         {
-            if (_isPaused)
-                return;
-            
             BeforeUpdate();
             Run();
         }
         
         private async void FixedUpdate()
         {
-            if (_isPaused)
-                return;
-            
             BeforeFixedUpdate();
             FixedRun();
         }
         
         private async void LateUpdate()
         {
-            if (_isPaused)
-                return;
-            
             BeforeLateUpdate();
             LateRun();
         }
