@@ -7,11 +7,13 @@ namespace DI
 {
     public class DIContainer
     {
-        static DIContainer _instance;
-        public static DIContainer Instance => _instance ??= new DIContainer();
+        // Singleton Instance with thread safety
+        private static readonly Lazy<DIContainer> _lazyInstance = new(() => new DIContainer());
+        public static DIContainer Instance => _lazyInstance.Value;
 
         private readonly Dictionary<Type, Registration> _registrations = new();
 
+        // Registration class to hold factory and lifetime data
         class Registration
         {
             public Func<object> Factory;
@@ -19,23 +21,24 @@ namespace DI
             public object ObjectInstance;
         }
 
-        // Bind by interface or base class
-        public void Bind<TService, TImplementation>(Lifetime lifetime = Lifetime.Transient) where TImplementation : TService, new()
+        // Bind by interface or base class with added support for custom factories
+        public void Bind<TService, TImplementation>(Lifetime lifetime = Lifetime.Transient)
+            where TImplementation : TService, new()
         {
             _registrations[typeof(TService)] = new Registration
             {
                 Factory = () => new TImplementation(),
-                Lifetime = lifetime,
+                Lifetime = lifetime
             };
         }
 
         public void Bind<TService>(TService instance, Lifetime lifetime = Lifetime.Singleton) where TService : class
         {
-            if (instance is MonoBehaviour monoBehaviour && lifetime == Lifetime.Transient)
+            if (instance is MonoRunner monoRunner && lifetime == Lifetime.Transient)
             {
                 _registrations[typeof(TService)] = new Registration
                 {
-                    Factory = () => UnityEngine.Object.Instantiate(monoBehaviour),
+                    Factory = () => UnityEngine.Object.Instantiate(monoRunner),
                     Lifetime = lifetime
                 };
             }
@@ -50,6 +53,16 @@ namespace DI
             }
         }
 
+        // Added: Bind with custom factory
+        public void Bind<TService>(Func<TService> factory, Lifetime lifetime = Lifetime.Transient) where TService : class
+        {
+            _registrations[typeof(TService)] = new Registration
+            {
+                Factory = () => factory(),
+                Lifetime = lifetime
+            };
+        }
+
         public T Resolve<T>()
         {
             return (T)Resolve(typeof(T));
@@ -62,6 +75,7 @@ namespace DI
                 throw new InvalidOperationException($"Service of type {serviceType} is not registered.");
             }
 
+            // Handle lifetimes and caching instances
             return registration.Lifetime switch
             {
                 Lifetime.Singleton => registration.ObjectInstance ??= registration.Factory(),
@@ -69,6 +83,22 @@ namespace DI
                 Lifetime.Transient => registration.Factory(),
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+        // Added: Validation method to check all registrations are resolvable
+        public void ValidateRegistrations()
+        {
+            foreach (var serviceType in _registrations.Keys)
+            {
+                try
+                {
+                    Resolve(serviceType);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to resolve {serviceType}: {e.Message}");
+                }
+            }
         }
 
         // Instantiate and inject dependencies
@@ -100,6 +130,7 @@ namespace DI
             return instance;
         }
 
+        // Inject dependencies and bind instance
         void SetupAfterSpawn<T>(T instance) where T : MonoRunner
         {
             DIInitializer.Instance.InjectDependencies(instance);

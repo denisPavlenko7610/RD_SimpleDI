@@ -13,6 +13,7 @@
 //     {
 //         base.Initialize();
 //         InitializeBindings();
+//         DIContainer.Instance.ValidateRegistrations();
 //     }
 //     
 //     void InitializeBindings()
