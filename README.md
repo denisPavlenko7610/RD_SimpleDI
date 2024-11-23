@@ -103,3 +103,6 @@ instead OnDestroy - Delete
 
 Also use methods BeforeAwake, BeforeStart, BeforeUpdate and similar only once in your entry point to call some logic before these methods_
 
+# Use Runner instead of MonoRunner
+if this object dont need to be on the scene but if it needs to use update or fixedUpdate or LateUpdate methods
+

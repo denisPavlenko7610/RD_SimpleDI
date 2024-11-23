@@ -1,6 +1,7 @@
 ﻿// using System;
 // using System.Threading.Tasks;
 // using DI;
+// using RD_SimpleDI.Runtime;
 // using RD_SimpleDI.Runtime.LifeCycle;
 // using UnityEngine;
 // using UnityEngine.SceneManagement;
@@ -66,7 +67,7 @@
 //
 //         public static T Resolve<T>() => DIContainer.Instance.Resolve<T>();
 //
-//         private void OnPausePerformed(InputAction.CallbackContext context) => TogglePause();
+//         private void OnPausePerformed(InputAction.CallbackContext context) => GameState.TogglePause();
 //
 //         protected override void Delete()
 //         {
