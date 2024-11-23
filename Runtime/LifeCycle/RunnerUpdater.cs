@@ -6,23 +6,17 @@ namespace RD_SimpleDI.Runtime.LifeCycle
 {
     public class RunnerUpdater : MonoBehaviour
     {
-        private static RunnerUpdater _instance;
-
-        private static RunnerUpdater Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    var managerObject = new GameObject("RunnerUpdater");
-                    _instance = managerObject.AddComponent<RunnerUpdater>();
-                }
-                return _instance;
-            }
-        }
+        public static RunnerUpdater Instance { get; private set; }
 
         private readonly List<IRunner> _runners = new();
         private readonly List<MonoRunner> _monoRunners = new();
+
+        public void Init()
+        {
+            var managerObject = new GameObject("RunnerUpdater");
+            Instance = managerObject.AddComponent<RunnerUpdater>();
+            DontDestroyOnLoad(this);
+        }
 
         // Register a non-MonoBehaviour Runner
         public static void RegisterRunner(IRunner runner)
@@ -95,17 +89,6 @@ namespace RD_SimpleDI.Runtime.LifeCycle
             foreach (MonoRunner monoRunner in _monoRunners)
             {
                 monoRunner.LateRun();
-            }
-        }
-        
-        // Clean up when the scene is unloaded or when this object is destroyed
-        private void OnDestroy()
-        {
-            // Manually destroy the GameObject and nullify the singleton
-            if (_instance != null)
-            {
-                Destroy(_instance.gameObject);
-                _instance = null;
             }
         }
     }

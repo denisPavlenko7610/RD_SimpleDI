@@ -105,4 +105,5 @@ Also use methods BeforeAwake, BeforeStart, BeforeUpdate and similar only once in
 
 # Use Runner instead of MonoRunner
 if this object dont need to be on the scene but if it needs to use update or fixedUpdate or LateUpdate methods
+Add RunnerUpdater on ProjectContext and init it.
 

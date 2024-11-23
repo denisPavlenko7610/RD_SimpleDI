@@ -11,12 +11,14 @@
 //     public class ProjectContext : MonoRunner
 //     {
 //         private InputAction _pauseAction;
+//         [SerializeField] RunnerUpdater _runnerUpdater;
 //
 //         protected override async void BeforeAwake()
 //         {
 //             try
 //             {
 //                 base.BeforeAwake();
+//                 _runnerUpdater.Init();
 //                 InitializeBindings();
 //                 SetUnityLogStatus();
 //                 DontDestroyOnLoad(gameObject);
