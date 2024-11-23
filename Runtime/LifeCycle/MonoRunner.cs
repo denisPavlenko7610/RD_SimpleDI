@@ -45,7 +45,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         /// <summary>
         /// Hooks for MonoBehaviour-specific lifecycle events
         /// </summary>
-        public virtual void BeforeAwake() {}
+        protected virtual void BeforeAwake() {}
         protected virtual void BeforeStart() {}
         protected virtual void BeforeEnable() {}
         protected virtual void BeforeDisable() {}
@@ -55,7 +55,7 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         protected virtual void BeforeDestroy() {}
 
         // These methods will be overridden to implement specific behavior
-        public virtual void Initialize(){}
+        protected virtual void Initialize(){}
         protected virtual void Appear(){}
         public virtual void Run(){}
         public virtual void FixedRun(){}
