@@ -1,95 +1,112 @@
 ﻿using System.Collections.Generic;
+using RD_SimpleDI.Runtime;
+using RD_SimpleDI.Runtime.LifeCycle;
 using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 using UnityEngine;
 
-namespace RD_SimpleDI.Runtime.LifeCycle
+public class RunnerUpdater : MonoBehaviour
 {
-    public class RunnerUpdater : MonoBehaviour
+    private static RunnerUpdater _instance;
+    
+    private static bool _isShuttingDown = false;
+    public static RunnerUpdater Instance
     {
-        public static RunnerUpdater Instance { get; private set; }
-
-        private readonly List<IRunner> _runners = new();
-        private readonly List<MonoRunner> _monoRunners = new();
-
-        public void Init()
+        get
         {
-            var managerObject = new GameObject("RunnerUpdater");
-            Instance = managerObject.AddComponent<RunnerUpdater>();
-            DontDestroyOnLoad(this);
-        }
-
-        // Register a non-MonoBehaviour Runner
-        public static void RegisterRunner(IRunner runner)
-        {
-            if (runner is MonoRunner monoRunner)
-            {
-                Instance._monoRunners.Add(monoRunner);
-            }
-            else
-            {
-                Instance._runners.Add(runner);
-            }
-        }
-
-        // Unregister a non-MonoBehaviour Runner
-        public static void UnregisterRunner(IRunner runner)
-        {
-            if (runner is MonoRunner monoRunner)
-            {
-                Instance?._monoRunners.Remove(monoRunner);
-            }
-            else
-            {
-                Instance?._runners.Remove(runner);
-            }
-        }
-
-        private void Update()
-        {
-            if (GameState.IsPaused)
-                return;
+            if (_isShuttingDown) 
+                return null;
             
-            foreach (IRunner runner in _runners)
+            if (_instance == null)
             {
-                runner?.Run();
+                var existingObject = FindAnyObjectByType<RunnerUpdater>();
+                if (existingObject != null)
+                {
+                    _instance = existingObject;
+                }
+                else
+                {
+                    var managerObject = new GameObject("RunnerUpdater");
+                    _instance = managerObject.AddComponent<RunnerUpdater>();
+                    DontDestroyOnLoad(managerObject);
+                }
             }
-
-            foreach (MonoRunner monoRunner in _monoRunners)
-            {
-                monoRunner?.Run();
-            }
+            return _instance;
         }
+    }
 
-        private void FixedUpdate()
+
+    private readonly List<IRunner> _runners = new();
+    private readonly List<MonoRunner> _monoRunners = new();
+
+    public void Awake()
+    {
+        if (_instance == null)
         {
-            if (GameState.IsPaused)
-                return;
-            
-            foreach (IRunner runner in _runners)
-            {
-                runner?.FixedRun();
-            }
-
-            foreach (MonoRunner monoRunner in _monoRunners)
-            {
-                monoRunner?.FixedRun();
-            }
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-
-        private void LateUpdate()
+        else if (_instance != this)
         {
-            if (GameState.IsPaused)
-                return;
-            
-            foreach (IRunner runner in _runners)
-            {
-                runner.LateRun();
-            }
+            Destroy(gameObject);
+        }
+    }
 
-            foreach (MonoRunner monoRunner in _monoRunners)
-            {
-                monoRunner.LateRun();
-            }
+    public static void RegisterRunner(IRunner runner)
+    {
+        if (runner is MonoRunner monoRunner)
+        {
+            Instance._monoRunners.Add(monoRunner);
+        }
+        else
+        {
+            Instance._runners.Add(runner);
+        }
+    }
+
+    public static void UnregisterRunner(IRunner runner)
+    {
+        if (runner is MonoRunner monoRunner)
+        {
+            Instance?._monoRunners.Remove(monoRunner);
+        }
+        else
+        {
+            Instance?._runners.Remove(runner);
+        }
+    }
+
+    private void Update()
+    {
+        if (GameState.IsPaused) return;
+
+        foreach (var runner in _runners) runner?.Run();
+        foreach (var monoRunner in _monoRunners) monoRunner?.Run();
+    }
+
+    private void FixedUpdate()
+    {
+        if (GameState.IsPaused) return;
+
+        foreach (var runner in _runners) runner?.FixedRun();
+        foreach (var monoRunner in _monoRunners) monoRunner?.FixedRun();
+    }
+
+    private void LateUpdate()
+    {
+        if (GameState.IsPaused) return;
+
+        foreach (var runner in _runners) runner?.LateRun();
+        foreach (var monoRunner in _monoRunners) monoRunner?.LateRun();
+    }
+
+    private void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            _runners.Clear();
+            _monoRunners.Clear();
+            _instance = null;
+            _isShuttingDown = true;
         }
     }
 }

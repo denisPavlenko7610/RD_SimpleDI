@@ -3,6 +3,7 @@
 // using DI;
 // using RD_SimpleDI.Runtime;
 // using RD_SimpleDI.Runtime.LifeCycle;
+// using RDTools.AutoAttach;
 // using UnityEngine;
 // using UnityEngine.SceneManagement;
 //
@@ -11,7 +12,7 @@
 //     public class ProjectContext : MonoRunner
 //     {
 //         private InputAction _pauseAction;
-//         [SerializeField] RunnerUpdater _runnerUpdater;
+//         [SerializeField, Attach(Attach.Scene)] RunnerUpdater _runnerUpdater;
 //
 //         protected override async void BeforeAwake()
 //         {
