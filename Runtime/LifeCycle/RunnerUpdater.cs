@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace RD_SimpleDI.Runtime.LifeCycle
 {
@@ -43,67 +42,58 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         {
             if (runner is MonoRunner monoRunner)
             {
-                Instance?._monoRunners?.Remove(monoRunner);
+                Instance?._monoRunners.Remove(monoRunner);
             }
             else
             {
-                Instance?._runners?.Remove(runner);
+                Instance?._runners.Remove(runner);
             }
         }
 
         private void Update()
         {
+            if (GameState.IsPaused)
+                return;
+            
             foreach (IRunner runner in _runners)
             {
-                if (GameState.IsPaused)
-                    continue;
-                
-                runner.Run();
+                runner?.Run();
             }
 
             foreach (MonoRunner monoRunner in _monoRunners)
             {
-                if (GameState.IsPaused)
-                    continue;
-                
-                monoRunner.Run();
+                monoRunner?.Run();
             }
         }
 
         private void FixedUpdate()
         {
+            if (GameState.IsPaused)
+                return;
+            
             foreach (IRunner runner in _runners)
             {
-                if (GameState.IsPaused)
-                    continue;
-                
-                runner.FixedRun();
+                runner?.FixedRun();
             }
 
             foreach (MonoRunner monoRunner in _monoRunners)
             {
-                if (GameState.IsPaused)
-                    continue;
-                
-                monoRunner.FixedRun();
+                monoRunner?.FixedRun();
             }
         }
 
         private void LateUpdate()
         {
+            if (GameState.IsPaused)
+                return;
+            
             foreach (IRunner runner in _runners)
             {
-                if (GameState.IsPaused)
-                    continue;
-                
                 runner.LateRun();
             }
 
             foreach (MonoRunner monoRunner in _monoRunners)
             {
-                if (GameState.IsPaused)
-                    continue;
-                
                 monoRunner.LateRun();
             }
         }
@@ -112,26 +102,6 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         private void OnDestroy()
         {
             // Manually destroy the GameObject and nullify the singleton
-            if (_instance != null)
-            {
-                Destroy(_instance.gameObject);
-                _instance = null;
-            }
-        }
-
-        private void OnEnable()
-        {
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-        }
-
-        private void OnDisable()
-        {
-            SceneManager.sceneUnloaded -= OnSceneUnloaded;
-        }
-
-        private void OnSceneUnloaded(Scene scene)
-        {
-            // Clean up the singleton when the scene is unloaded
             if (_instance != null)
             {
                 Destroy(_instance.gameObject);
