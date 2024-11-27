@@ -2,6 +2,6 @@
 {
     public interface IFixedRun
     {
-        void FixedRun();
+        void FixedRun(float fixedDeltaTime);
     }
 }

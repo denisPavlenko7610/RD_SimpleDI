@@ -1,112 +1,139 @@
 ﻿using System.Collections.Generic;
+using _Packages.RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 using RD_SimpleDI.Runtime;
-using RD_SimpleDI.Runtime.LifeCycle;
 using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 using UnityEngine;
 
-public class RunnerUpdater : MonoBehaviour
+namespace _Packages.RD_SimpleDI.Runtime.LifeCycle
 {
-    private static RunnerUpdater _instance;
-    
-    private static bool _isShuttingDown = false;
-    public static RunnerUpdater Instance
+    public class RunnerUpdater : MonoBehaviour
     {
-        get
+        private static RunnerUpdater _instance;
+    
+        private static bool _isShuttingDown;
+        
+                
+        // Pause logic
+        private static void Pause() => OnPause?.Invoke();
+        private static void Resume() => OnResume?.Invoke();
+
+        public static event System.Action OnPause;
+        public static event System.Action OnResume;
+
+        private static RunnerUpdater Instance
         {
-            if (_isShuttingDown) 
-                return null;
+            get
+            {
+                if (_isShuttingDown) 
+                    return null;
             
+                if (_instance == null)
+                {
+                    var existingObject = FindAnyObjectByType<RunnerUpdater>();
+                    if (existingObject != null)
+                    {
+                        _instance = existingObject;
+                    }
+                    else
+                    {
+                        var managerObject = new GameObject("RunnerUpdater");
+                        _instance = managerObject.AddComponent<RunnerUpdater>();
+                        DontDestroyOnLoad(managerObject);
+                    }
+                }
+                return _instance;
+            }
+        }
+
+
+        private readonly List<IRunner> _runners = new();
+
+        public void Awake()
+        {
             if (_instance == null)
             {
-                var existingObject = FindAnyObjectByType<RunnerUpdater>();
-                if (existingObject != null)
-                {
-                    _instance = existingObject;
-                }
-                else
-                {
-                    var managerObject = new GameObject("RunnerUpdater");
-                    _instance = managerObject.AddComponent<RunnerUpdater>();
-                    DontDestroyOnLoad(managerObject);
-                }
+                _instance = this;
+                DontDestroyOnLoad(gameObject);
             }
-            return _instance;
+            else if (_instance != this)
+            {
+                Destroy(gameObject);
+            }
         }
-    }
 
+        public static void RegisterRunner(IRunner runner)
+        {
+            RegisterPause(runner);
+                Instance._runners.Add(runner);
+        }
 
-    private readonly List<IRunner> _runners = new();
-    private readonly List<MonoRunner> _monoRunners = new();
+        private static void RegisterPause(IRunner runner)
+        {
+            if (runner is IPause iPause)
+                GameState.PauseAction += iPause.Pause;
 
-    public void Awake()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (runner is IResume iResume)
+                GameState.ResumeAction += iResume.Resume;
         }
-        else if (_instance != this)
+        
+        private static void UnregisterPause(IRunner runner)
         {
-            Destroy(gameObject);
-        }
-    }
+            if (runner is IPause iPause)
+                GameState.PauseAction -= iPause.Pause;
 
-    public static void RegisterRunner(IRunner runner)
-    {
-        if (runner is MonoRunner monoRunner)
-        {
-            Instance._monoRunners.Add(monoRunner);
+            if (runner is IResume iResume)
+                GameState.ResumeAction -= iResume.Resume;
         }
-        else
-        {
-            Instance._runners.Add(runner);
-        }
-    }
 
-    public static void UnregisterRunner(IRunner runner)
-    {
-        if (runner is MonoRunner monoRunner)
+        public static void UnregisterRunner(IRunner runner)
         {
-            Instance?._monoRunners.Remove(monoRunner);
-        }
-        else
-        {
+            UnregisterPause(runner);
             Instance?._runners.Remove(runner);
         }
-    }
 
-    private void Update()
-    {
-        if (GameState.IsPaused) return;
-
-        foreach (var runner in _runners) runner?.Run();
-        foreach (var monoRunner in _monoRunners) monoRunner?.Run();
-    }
-
-    private void FixedUpdate()
-    {
-        if (GameState.IsPaused) return;
-
-        foreach (var runner in _runners) runner?.FixedRun();
-        foreach (var monoRunner in _monoRunners) monoRunner?.FixedRun();
-    }
-
-    private void LateUpdate()
-    {
-        if (GameState.IsPaused) return;
-
-        foreach (var runner in _runners) runner?.LateRun();
-        foreach (var monoRunner in _monoRunners) monoRunner?.LateRun();
-    }
-
-    private void OnDestroy()
-    {
-        if (_instance == this)
+        private void Start()
         {
-            _runners.Clear();
-            _monoRunners.Clear();
-            _instance = null;
-            _isShuttingDown = true;
+            foreach (IRunner runner in _runners)
+            {
+                runner.Init();
+            }
+        }
+
+        private void Update()
+        {
+            if (GameState.IsPaused)
+                return;
+
+            foreach (var runner in _runners) 
+                runner?.Run(Time.deltaTime);
+        }
+
+        private void FixedUpdate()
+        {
+            if (GameState.IsPaused)
+                return;
+
+            foreach (var runner in _runners)
+                runner?.FixedRun(Time.fixedDeltaTime);
+        }
+
+        private void LateUpdate()
+        {
+            if (GameState.IsPaused)
+                return;
+
+            foreach (var runner in _runners)
+                runner?.LateRun(Time.deltaTime);
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _runners.Clear();
+                _instance = null;
+                _isShuttingDown = true;
+            }
         }
     }
 }

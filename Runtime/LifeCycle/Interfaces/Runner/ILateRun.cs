@@ -2,6 +2,6 @@
 {
     public interface ILateRun
     {
-        void LateRun();
+        void LateRun(float lateDeltaTime);
     }
 }

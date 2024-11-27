@@ -1,4 +1,5 @@
-﻿using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
+﻿using _Packages.RD_SimpleDI.Runtime.LifeCycle;
+using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 
 namespace RD_SimpleDI.Runtime.LifeCycle
 {
@@ -8,9 +9,6 @@ namespace RD_SimpleDI.Runtime.LifeCycle
         protected Runner()
         {
             RunnerUpdater.RegisterRunner(this);
-            Init();
-            BeforeAwake();
-            Initialize();
         }
 
         ~Runner()
@@ -18,17 +16,18 @@ namespace RD_SimpleDI.Runtime.LifeCycle
             RunnerUpdater.UnregisterRunner(this);
         }
 
-        void Init()
+        public void Init()
         {
             GameState.PauseAction += Pause;
             GameState.ResumeAction += Resume;
+            
+            Initialize();
         }
-        
-        protected virtual void BeforeAwake(){}
-        protected virtual void Initialize(){}
-        public virtual void Run(){}
-        public virtual void FixedRun(){}
-        public virtual void LateRun(){}
+
+        protected virtual void Initialize() {}
+        public void Run(float deltaTime) { }
+        public void FixedRun(float fixedDeltaTime) { }
+        public void LateRun(float lateDeltaTime) { }
 
         // Pause logic
         private void Pause() => OnPause?.Invoke();

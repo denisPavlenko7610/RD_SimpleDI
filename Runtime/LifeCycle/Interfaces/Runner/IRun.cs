@@ -2,6 +2,6 @@
 {
     public interface IRun
     {
-        void Run();
+        void Run(float deltaTime);
     }
 }
