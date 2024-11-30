@@ -11,11 +11,22 @@ namespace _Packages.RD_SimpleDI.Runtime.LifeCycle
         private static RunnerUpdater _instance;
     
         private static bool _isShuttingDown;
+        private bool _isPaused;
         
-                
+        private readonly HashSet<IRunner> _runners = new();
+        
         // Pause logic
-        private static void Pause() => OnPause?.Invoke();
-        private static void Resume() => OnResume?.Invoke();
+        private void Pause()
+        {
+            OnPause?.Invoke();
+            _isPaused = true;
+        }
+
+        private void Resume()
+        {
+            OnResume?.Invoke();
+            _isPaused = false;
+        }
 
         public static event System.Action OnPause;
         public static event System.Action OnResume;
@@ -29,25 +40,12 @@ namespace _Packages.RD_SimpleDI.Runtime.LifeCycle
             
                 if (_instance == null)
                 {
-                    var existingObject = FindAnyObjectByType<RunnerUpdater>();
-                    if (existingObject != null)
-                    {
-                        _instance = existingObject;
-                    }
-                    else
-                    {
-                        var managerObject = new GameObject("RunnerUpdater");
-                        _instance = managerObject.AddComponent<RunnerUpdater>();
-                        DontDestroyOnLoad(managerObject);
-                    }
+                    _instance = FindAnyObjectByType<RunnerUpdater>();
                 }
                 return _instance;
             }
         }
-
-
-        private readonly List<IRunner> _runners = new();
-
+        
         public void Awake()
         {
             if (_instance == null)
@@ -61,10 +59,53 @@ namespace _Packages.RD_SimpleDI.Runtime.LifeCycle
             }
         }
 
+        private void Update()
+        {
+            if (_isPaused)
+                return;
+
+            foreach (var runner in _runners) 
+                runner.Run(Time.deltaTime);
+        }
+
+        private void FixedUpdate()
+        {
+            if (_isPaused)
+                return;
+
+            foreach (var runner in _runners)
+                runner.FixedRun(Time.fixedDeltaTime);
+        }
+
+        private void LateUpdate()
+        {
+            if (_isPaused)
+                return;
+
+            foreach (var runner in _runners)
+                runner.LateRun(Time.deltaTime);
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance != this) 
+                return;
+            
+            _runners.Clear();
+            _isShuttingDown = true;
+            _instance = null;
+        }
+
         public static void RegisterRunner(IRunner runner)
         {
             RegisterPause(runner);
-                Instance._runners.Add(runner);
+            Instance._runners.Add(runner);
+        }
+        
+        public static void UnregisterRunner(IRunner runner)
+        {
+            UnregisterPause(runner);
+            Instance?._runners.Remove(runner);
         }
 
         private static void RegisterPause(IRunner runner)
@@ -83,57 +124,6 @@ namespace _Packages.RD_SimpleDI.Runtime.LifeCycle
 
             if (runner is IResume iResume)
                 GameState.ResumeAction -= iResume.Resume;
-        }
-
-        public static void UnregisterRunner(IRunner runner)
-        {
-            UnregisterPause(runner);
-            Instance?._runners.Remove(runner);
-        }
-
-        private void Start()
-        {
-            foreach (IRunner runner in _runners)
-            {
-                runner.Init();
-            }
-        }
-
-        private void Update()
-        {
-            if (GameState.IsPaused)
-                return;
-
-            foreach (var runner in _runners) 
-                runner?.Run(Time.deltaTime);
-        }
-
-        private void FixedUpdate()
-        {
-            if (GameState.IsPaused)
-                return;
-
-            foreach (var runner in _runners)
-                runner?.FixedRun(Time.fixedDeltaTime);
-        }
-
-        private void LateUpdate()
-        {
-            if (GameState.IsPaused)
-                return;
-
-            foreach (var runner in _runners)
-                runner?.LateRun(Time.deltaTime);
-        }
-
-        private void OnDestroy()
-        {
-            if (_instance == this)
-            {
-                _runners.Clear();
-                _instance = null;
-                _isShuttingDown = true;
-            }
         }
     }
 }

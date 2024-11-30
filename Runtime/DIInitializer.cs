@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-// DIInitializer.cs
 namespace DI
 {
     public class DIInitializer
