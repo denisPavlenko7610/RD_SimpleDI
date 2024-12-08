@@ -1,6 +1,4 @@
-﻿using _Packages.RD_SimpleDI.Runtime.LifeCycle;
-using DI;
-using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
+﻿using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 
 namespace RD_SimpleDI.Runtime.LifeCycle
 {

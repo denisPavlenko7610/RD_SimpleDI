@@ -1,4 +1,4 @@
-﻿namespace DI
+﻿namespace RD_SimpleDI.Runtime.DI
 {
     public enum Lifetime
     {

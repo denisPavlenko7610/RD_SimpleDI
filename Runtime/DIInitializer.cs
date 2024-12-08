@@ -1,10 +1,10 @@
-﻿using DI.Attributes;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
+using RD_SimpleDI.Runtime.DI.Attributes;
 using UnityEngine;
 
-namespace DI
+namespace RD_SimpleDI.Runtime.DI
 {
     public class DIInitializer
     {

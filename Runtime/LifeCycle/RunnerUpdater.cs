@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using _Packages.RD_SimpleDI.Runtime.LifeCycle.Interfaces;
-using RD_SimpleDI.Runtime;
 using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 using UnityEngine;
 
-namespace _Packages.RD_SimpleDI.Runtime.LifeCycle
+namespace RD_SimpleDI.Runtime.LifeCycle
 {
     public class RunnerUpdater : MonoBehaviour
     {

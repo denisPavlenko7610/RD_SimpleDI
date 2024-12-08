@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DI
+namespace RD_SimpleDI.Runtime.DI
 {
     public class DIContainer
     {

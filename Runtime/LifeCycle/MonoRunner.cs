@@ -1,5 +1,4 @@
-﻿using _Packages.RD_SimpleDI.Runtime.LifeCycle;
-using DI;
+﻿using RD_SimpleDI.Runtime.DI;
 using RD_SimpleDI.Runtime.LifeCycle.Interfaces;
 using UnityEngine;
 

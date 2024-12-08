@@ -15,7 +15,7 @@ Automatic Field and Method Injection via [Inject] attribute
 //Exemple SceneContext class
 public class SceneContext : MonoRunner
 {
-    //See code in Example folder
+    //See code Example here - https://github.com/denisPavlenko7610/LikeAGTA_unity
 }
 ```
 
@@ -90,7 +90,7 @@ public class AudioPlayer : MonoRunner
 ```C#
 public class ProjectContext : MonoRunner
 {
-    //See code in Example folder
+    //See code Example here - https://github.com/denisPavlenko7610/LikeAGTA_unity
 }
 ```
 
